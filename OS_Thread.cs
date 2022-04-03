@@ -9,28 +9,32 @@ namespace OS_Practice_5
 {
     enum OS_ThreadStatus
     {
-        None, Created, Ready, Running, Awaiting, Executed
+        None, Created, Stopped, Running, Awaiting, Executed
     }
     enum OS_Task
     {
-        Primes, Summation, Factorials
+        Primes, Fermat, Factorials
     }
     class OS_Thread
     {
-        private const int MAX_NUMBER = 200000;
+        private const int MAX_NUMBER = 500000;
 
         public OS_ThreadStatus T_Status;
         public OS_Task T_Task;
         public bool T_isSelected;
         public int T_Priority;
         public Thread T_Thread;
+        public int T_Progress;
+        public string T_Result;
 
         public OS_Thread(OS_Task task)
         {
             T_Status = OS_ThreadStatus.None;
             T_isSelected = false;
-            T_Priority = 1;
+            T_Priority = 3;
             T_Task = task;
+            T_Progress = 0;
+            T_Result = "";
             T_Thread = new Thread(OS_PerformTask);
         }
 
@@ -46,8 +50,8 @@ namespace OS_Practice_5
                 case OS_Task.Primes:
                     OS_PerformTask_Primes();
                     break;
-                case OS_Task.Summation:
-                    OS_PerformTask_Summation();
+                case OS_Task.Fermat:
+                    OS_PerformTask_Fermat();
                     break;
                 case OS_Task.Factorials:
                     OS_PerformTask_Factorials();
@@ -67,6 +71,7 @@ namespace OS_Practice_5
                 {
                     if (i % j == 0) {
                         if (T_Status == OS_ThreadStatus.Awaiting) return;
+                        //T_Thread.Join();
                         isPrime = false;
                         break;
                     }
@@ -75,29 +80,61 @@ namespace OS_Practice_5
                 {
                     primes.Add(i);
                 }
+                T_Progress = i * 100 / MAX_NUMBER;
             }
-            foreach (int item in primes)
-            {
-                Console.Write(item.ToString() + ", ");
-            }
+            T_Result = "найдено " + primes.Count.ToString() + " простых чисел";
+            T_Status = OS_ThreadStatus.Stopped;
         }
 
-        private void OS_PerformTask_Summation()
+        private void OS_PerformTask_Fermat()
         {
-            ulong sum = 0;
-            for (int i = 0; i < MAX_NUMBER; i++)
+            bool isFermatTheoremTrue = true;
+            for (int i = 1; i < 10000; i++)
             {
-                if (i % 2 == 1 && i % 10 != 0)
-                    sum += (ulong)i * (ulong)i;
-                else
-                    sum += (ulong)i;
+                for (int j = 1; j < 100; j++)
+                {
+                    for (int k = 0; k < 100000; k++)
+                    {
+                        if (i*i + j*j < k*k)
+                        {
+                            break;
+                        }
+                        if (i * i + j * j == k * k)
+                        {
+                            isFermatTheoremTrue = false;
+                            break;
+                        }
+                    }
+                }
+                T_Progress = i * 100 / MAX_NUMBER;
             }
-            Console.WriteLine(sum);
+            if (isFermatTheoremTrue)
+            {
+                T_Result = "опровержения теоремы Ферма не найдено";
+            } 
+            else 
+            {
+                T_Result = "найдено опровержение теоремы Ферма";
+            }
+            T_Status = OS_ThreadStatus.Stopped;
         }
 
         private void OS_PerformTask_Factorials()
         {
-
+            List<ulong> factorials = new List<ulong>();
+            for (int i = 0; i < MAX_NUMBER; i++)
+            {
+                ulong mul = 1;
+                for (int j = 1; j < i; j++)
+                {
+                    if (T_Status == OS_ThreadStatus.Awaiting) return;
+                    mul *= (ulong)j;
+                }
+                factorials.Add(mul);
+                T_Progress = i * 100 / MAX_NUMBER;
+            }
+            T_Result = "вычислены " + factorials.Count.ToString() + " факториалов";
+            T_Status = OS_ThreadStatus.Stopped;
         }
     }
 }
