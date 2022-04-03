@@ -17,7 +17,7 @@ namespace OS_Practice_5
     }
     class OS_Thread
     {
-        private const int MAX_NUMBER = 400000;
+        private const int MAX_NUMBER = 200000;
 
         public OS_ThreadStatus T_Status;
         public OS_Task T_Task;
@@ -66,6 +66,7 @@ namespace OS_Practice_5
                 for (int j = 2; j < i; j++)
                 {
                     if (i % j == 0) {
+                        if (T_Status == OS_ThreadStatus.Awaiting) return;
                         isPrime = false;
                         break;
                     }

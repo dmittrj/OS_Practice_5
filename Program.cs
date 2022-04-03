@@ -11,11 +11,11 @@ namespace OS_Practice_5
         {
             if (OS_CurrentCursorPosition == position)
             {
-                Console.Write(" >");
+                Console.Write("│>");
             } 
             else
             {
-                Console.Write("  ");
+                Console.Write("│ ");
             }
             if (OS_Threads[position].T_isSelected)
             {
@@ -49,7 +49,7 @@ namespace OS_Practice_5
                     {
                         Console.Write("/");
                     }
-                    for (int i = 0; i < 5 - OS_Threads[position].T_Priority; i++)
+                    for (int i = 0; i < 10 - OS_Threads[position].T_Priority; i++)
                     {
                         Console.Write(" ");
                     }
@@ -93,7 +93,7 @@ namespace OS_Practice_5
                     {
                         Console.Write("/");
                     }
-                    for (int i = 0; i < 5 - OS_Threads[position].T_Priority; i++)
+                    for (int i = 0; i < 10 - OS_Threads[position].T_Priority; i++)
                     {
                         Console.Write(" ");
                     }
@@ -117,6 +117,46 @@ namespace OS_Practice_5
                     }
                     break;
                 case OS_ThreadStatus.Awaiting:
+                    switch (OS_Threads[position].T_Task)
+                    {
+                        case OS_Task.Primes:
+                            Console.Write(" Поток 1: поиск простых чисел    ");
+                            break;
+                        case OS_Task.Summation:
+                            Console.Write(" Поток 2: суммирование чисел     ");
+                            break;
+                        case OS_Task.Factorials:
+                            Console.Write(" Поток 3: нахождение факториалов ");
+                            break;
+                        default:
+                            break;
+                    }
+                    for (int i = 0; i < OS_Threads[position].T_Priority; i++)
+                    {
+                        Console.Write("/");
+                    }
+                    for (int i = 0; i < 10 - OS_Threads[position].T_Priority; i++)
+                    {
+                        Console.Write(" ");
+                    }
+                    Console.Write("  Ожидает ");
+                    switch (OS_Wheel)
+                    {
+                        case 0:
+                            Console.Write("/");
+                            break;
+                        case 1:
+                            Console.Write("-");
+                            break;
+                        case 2:
+                            Console.Write("\\");
+                            break;
+                        case 3:
+                            Console.Write("|");
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 case OS_ThreadStatus.Executed:
                     break;
@@ -128,27 +168,32 @@ namespace OS_Practice_5
         public static void OS_PrintTable()
         {
             Console.Clear();
-            Console.Write("\n Потоки:\n");
+            Console.Write("\n┌───┬─ Потоки ──────────────────────── Приоритет ─ Состояние ────┐\n");
             for (int i = 0; i < 3; i++)
             {
                 OS_DrawTableLine(i);
             }
+            Console.WriteLine("├───┴────────────────────────────────────────────────────────────┤");
             OS_Wheel++;
             OS_Wheel %= 4;
-            Console.WriteLine("\n __________________________\n");
             switch (OS_Threads[OS_CurrentCursorPosition].T_Status)
             {
                 case OS_ThreadStatus.None:
-                    Console.WriteLine(" Space - выбрать");
-                    Console.Write(" C - создать");
+                    Console.WriteLine("│ Space - выбрать                                                │");
+                    Console.WriteLine("│     C - создать                                                │");
+                    Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 case OS_ThreadStatus.Created:
-                    Console.WriteLine(" Space - выбрать");
-                    Console.Write(" Enter - запустить   +/- - изменить приоритет");
+                    Console.WriteLine("│ Space - выбрать                                                │");
+                    Console.WriteLine("│ Enter - запустить   +/- - изменить приоритет                   │");
+                    Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 case OS_ThreadStatus.Ready:
                     break;
                 case OS_ThreadStatus.Running:
+                    Console.WriteLine("│ Space - выбрать                                                │");
+                    Console.WriteLine("│     B - заблокировать   +/- - изменить приоритет               │");
+                    Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 case OS_ThreadStatus.Awaiting:
                     break;
@@ -239,6 +284,10 @@ namespace OS_Practice_5
                 case ConsoleKey.A:
                     break;
                 case ConsoleKey.B:
+                    if (OS_Threads[OS_CurrentCursorPosition].T_Status == OS_ThreadStatus.Running)
+                    {
+                        OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Awaiting;
+                    }
                     break;
                 case ConsoleKey.C:
                     if (OS_Threads[OS_CurrentCursorPosition].T_Status == OS_ThreadStatus.None)
