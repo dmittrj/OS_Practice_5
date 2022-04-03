@@ -18,6 +18,7 @@ namespace OS_Practice_5
     class OS_Thread
     {
         private const int MAX_NUMBER = 500000;
+        private const int MAX_NUMBER_FERMAT = 300;
 
         public OS_ThreadStatus T_Status;
         public OS_Task T_Task;
@@ -89,24 +90,24 @@ namespace OS_Practice_5
         private void OS_PerformTask_Fermat()
         {
             bool isFermatTheoremTrue = true;
-            for (int i = 1; i < 10000; i++)
+            for (int i = 1; i < MAX_NUMBER_FERMAT; i++)
             {
-                for (int j = 1; j < 100; j++)
+                for (int j = 1; j < MAX_NUMBER_FERMAT; j++)
                 {
-                    for (int k = 0; k < 100000; k++)
+                    for (int k = 0; k < MAX_NUMBER_FERMAT * MAX_NUMBER_FERMAT; k++)
                     {
-                        if (i*i + j*j < k*k)
+                        if (i * i * i + j * j * j == k * k * k)
                         {
                             break;
                         }
-                        if (i * i + j * j == k * k)
+                        if (i * i * i + j * j * j == k * k * k)
                         {
                             isFermatTheoremTrue = false;
                             break;
                         }
                     }
                 }
-                T_Progress = i * 100 / MAX_NUMBER;
+                T_Progress = i * 100 / MAX_NUMBER_FERMAT;
             }
             if (isFermatTheoremTrue)
             {

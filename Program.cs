@@ -8,6 +8,7 @@ namespace OS_Practice_5
         public static int OS_CurrentCursorPosition = 0;
         public static OS_Thread[] OS_Threads = new OS_Thread[3];
         public static int OS_Wheel = 0;
+        public static bool OS_WheelInterrupt = false;
         public static int[] cur_lefts = new int[3];
         public static int[] cur_tops = new int[3];
         public static void OS_DrawTableLine(int position)
@@ -31,7 +32,7 @@ namespace OS_Practice_5
             switch (OS_Threads[position].T_Status)
             {
                 case OS_ThreadStatus.None:
-                    Console.Write(" Не создан");
+                    Console.Write(" Не создан                                                 │");
                     break;
                 case OS_ThreadStatus.Created:
                     switch (OS_Threads[position].T_Task)
@@ -56,7 +57,7 @@ namespace OS_Practice_5
                     {
                         Console.Write(" ");
                     }
-                    Console.Write("  Создан ");
+                    Console.Write("  Создан        │");
                     break;
                 case OS_ThreadStatus.Stopped:
                     OS_Threads[position].T_Status = OS_ThreadStatus.Executed;
@@ -180,6 +181,8 @@ namespace OS_Practice_5
                             OS_PrintTable();
                             break;
                         case OS_ThreadStatus.Running:
+                            if (OS_WheelInterrupt)
+                                break;
                             Console.SetCursorPosition(cur_lefts[i], cur_tops[i]);
                             switch (OS_Wheel)
                             {
@@ -243,6 +246,7 @@ namespace OS_Practice_5
         
         public static void OS_PrintTable()
         {
+            OS_WheelInterrupt = true;
             Console.Clear();
             Console.Write("\n┌───┬─ Потоки ──────────────────────── Приоритет ─ Состояние ────┐\n");
             for (int i = 0; i < 3; i++)
@@ -292,6 +296,7 @@ namespace OS_Practice_5
                     break;
             }
             Console.WriteLine();
+            OS_WheelInterrupt = false;
         }
 
         static void Main(string[] args)
