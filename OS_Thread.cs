@@ -158,7 +158,7 @@ namespace OS_Practice_5
                 factorials.Add(mul);
                 T_Progress = i * 100 / MAX_NUMBER;
                 if (T_Status == OS_ThreadStatus.Awaiting) return;
-                if (DateTime.Now.Subtract(StartTime).TotalSeconds > Quantum)
+                if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
                 {
                     T_Status = OS_ThreadStatus.Awaiting;
                     return;

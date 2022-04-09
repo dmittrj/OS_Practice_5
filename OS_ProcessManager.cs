@@ -30,7 +30,7 @@ namespace OS_Practice_5
                         Program.OS_PrintTable();
                     };
                 }
-                //await Task.Delay(1);
+                await Task.Delay(1);
             }
         }
     }
