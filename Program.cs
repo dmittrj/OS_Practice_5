@@ -17,7 +17,7 @@ namespace OS_Practice_5
             if (OS_CurrentCursorPosition == position)
             {
                 Console.Write("│>");
-            } 
+            }
             else
             {
                 Console.Write("│ ");
@@ -192,7 +192,7 @@ namespace OS_Practice_5
             }
             Console.WriteLine();
         }
-        
+
         public static async void OS_Spinning()
         {
             while (true)
@@ -248,8 +248,8 @@ namespace OS_Practice_5
                 await Task.Delay(300);
             }
         }
-        
-       
+
+
         public static void OS_PrintTable()
         {
             if (OS_WheelInterrupt) return;
@@ -371,176 +371,6 @@ namespace OS_Practice_5
                             OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.None;
                         }
                         break;
-                    case ConsoleKey.E:
-                        break;
-                    case ConsoleKey.F:
-                        break;
-                    case ConsoleKey.G:
-                        break;
-                    case ConsoleKey.H:
-                        break;
-                    case ConsoleKey.I:
-                        break;
-                    case ConsoleKey.J:
-                        break;
-                    case ConsoleKey.K:
-                        break;
-                    case ConsoleKey.L:
-                        break;
-                    case ConsoleKey.M:
-                        break;
-                    case ConsoleKey.N:
-                        break;
-                    case ConsoleKey.O:
-                        break;
-                    case ConsoleKey.P:
-                        break;
-                    case ConsoleKey.Q:
-                        break;
-                    case ConsoleKey.R:
-                        break;
-                    case ConsoleKey.S:
-                        break;
-                    case ConsoleKey.T:
-                        break;
-                    case ConsoleKey.U:
-                        break;
-                    case ConsoleKey.V:
-                        break;
-                    case ConsoleKey.W:
-                        break;
-                    case ConsoleKey.X:
-                        break;
-                    case ConsoleKey.Y:
-                        break;
-                    case ConsoleKey.Z:
-                        break;
-                    case ConsoleKey.LeftWindows:
-                        break;
-                    case ConsoleKey.RightWindows:
-                        break;
-                    case ConsoleKey.Applications:
-                        break;
-                    case ConsoleKey.Sleep:
-                        break;
-                    case ConsoleKey.NumPad0:
-                        break;
-                    case ConsoleKey.NumPad1:
-                        break;
-                    case ConsoleKey.NumPad2:
-                        break;
-                    case ConsoleKey.NumPad3:
-                        break;
-                    case ConsoleKey.NumPad4:
-                        break;
-                    case ConsoleKey.NumPad5:
-                        break;
-                    case ConsoleKey.NumPad6:
-                        break;
-                    case ConsoleKey.NumPad7:
-                        break;
-                    case ConsoleKey.NumPad8:
-                        break;
-                    case ConsoleKey.NumPad9:
-                        break;
-                    case ConsoleKey.Multiply:
-                        break;
-                    case ConsoleKey.Add:
-                        break;
-                    case ConsoleKey.Separator:
-                        break;
-                    case ConsoleKey.Subtract:
-                        break;
-                    case ConsoleKey.Decimal:
-                        break;
-                    case ConsoleKey.Divide:
-                        break;
-                    case ConsoleKey.F1:
-                        break;
-                    case ConsoleKey.F2:
-                        break;
-                    case ConsoleKey.F3:
-                        break;
-                    case ConsoleKey.F4:
-                        break;
-                    case ConsoleKey.F5:
-                        break;
-                    case ConsoleKey.F6:
-                        break;
-                    case ConsoleKey.F7:
-                        break;
-                    case ConsoleKey.F8:
-                        break;
-                    case ConsoleKey.F9:
-                        break;
-                    case ConsoleKey.F10:
-                        break;
-                    case ConsoleKey.F11:
-                        break;
-                    case ConsoleKey.F12:
-                        break;
-                    case ConsoleKey.F13:
-                        break;
-                    case ConsoleKey.F14:
-                        break;
-                    case ConsoleKey.F15:
-                        break;
-                    case ConsoleKey.F16:
-                        break;
-                    case ConsoleKey.F17:
-                        break;
-                    case ConsoleKey.F18:
-                        break;
-                    case ConsoleKey.F19:
-                        break;
-                    case ConsoleKey.F20:
-                        break;
-                    case ConsoleKey.F21:
-                        break;
-                    case ConsoleKey.F22:
-                        break;
-                    case ConsoleKey.F23:
-                        break;
-                    case ConsoleKey.F24:
-                        break;
-                    case ConsoleKey.BrowserBack:
-                        break;
-                    case ConsoleKey.BrowserForward:
-                        break;
-                    case ConsoleKey.BrowserRefresh:
-                        break;
-                    case ConsoleKey.BrowserStop:
-                        break;
-                    case ConsoleKey.BrowserSearch:
-                        break;
-                    case ConsoleKey.BrowserFavorites:
-                        break;
-                    case ConsoleKey.BrowserHome:
-                        break;
-                    case ConsoleKey.VolumeMute:
-                        break;
-                    case ConsoleKey.VolumeDown:
-                        break;
-                    case ConsoleKey.VolumeUp:
-                        break;
-                    case ConsoleKey.MediaNext:
-                        break;
-                    case ConsoleKey.MediaPrevious:
-                        break;
-                    case ConsoleKey.MediaStop:
-                        break;
-                    case ConsoleKey.MediaPlay:
-                        break;
-                    case ConsoleKey.LaunchMail:
-                        break;
-                    case ConsoleKey.LaunchMediaSelect:
-                        break;
-                    case ConsoleKey.LaunchApp1:
-                        break;
-                    case ConsoleKey.LaunchApp2:
-                        break;
-                    case ConsoleKey.Oem1:
-                        break;
                     case ConsoleKey.OemPlus:
                         if (OS_Threads[OS_CurrentCursorPosition].T_Status != OS_ThreadStatus.None)
                         {
@@ -549,8 +379,6 @@ namespace OS_Practice_5
                                 OS_Threads[OS_CurrentCursorPosition].T_Priority = 5;
                             //OS_Threads[OS_CurrentCursorPosition].T_Thread.Priority = (System.Threading.ThreadPriority)(OS_Threads[OS_CurrentCursorPosition].T_Priority - 1);
                         }
-                        break;
-                    case ConsoleKey.OemComma:
                         break;
                     case ConsoleKey.OemMinus:
                         if (OS_Threads[OS_CurrentCursorPosition].T_Status != OS_ThreadStatus.None)
