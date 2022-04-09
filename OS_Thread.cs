@@ -26,6 +26,9 @@ namespace OS_Practice_5
         public int T_Priority;
         public Thread T_Thread;
         public int T_Progress;
+        private int Quantum;
+        private DateTime StartTime;
+        //private DateTime EndTime;
         public string T_Result;
 
         public OS_Thread(OS_Task task)
@@ -36,12 +39,20 @@ namespace OS_Practice_5
             T_Task = task;
             T_Progress = 0;
             T_Result = "";
+            Quantum = 0;
             T_Thread = new Thread(OS_PerformTask);
         }
 
-        public void OS_Start()
+        public async Task<Task> OS_Start(int quantum)
         {
+            Quantum = quantum;
+            T_Status = OS_ThreadStatus.Running;
+            Program.OS_PrintTable();
+            StartTime = DateTime.Now;
+            T_Thread = new Thread(OS_PerformTask);
             T_Thread.Start();
+            while (T_Status == OS_ThreadStatus.Running);
+            return new Task(OS_PerformTask);
         }
 
         private void OS_PerformTask()
@@ -60,6 +71,7 @@ namespace OS_Practice_5
                 default:
                     break;
             }
+            return;
         }
 
         private void OS_PerformTask_Primes()
@@ -71,11 +83,17 @@ namespace OS_Practice_5
                 for (int j = 2; j < i; j++)
                 {
                     if (i % j == 0) {
-                        if (T_Status == OS_ThreadStatus.Awaiting) return;
                         //T_Thread.Join();
                         isPrime = false;
                         break;
                     }
+                    if (T_Status == OS_ThreadStatus.Awaiting) return;
+                    if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
+                    {
+                        T_Status = OS_ThreadStatus.Awaiting;
+                        T_Thread.Join();
+                        return;
+                    };
                 }
                 if (isPrime)
                 {
@@ -105,6 +123,12 @@ namespace OS_Practice_5
                             isFermatTheoremTrue = false;
                             break;
                         }
+                        if (T_Status == OS_ThreadStatus.Awaiting) return;
+                        if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
+                        {
+                            T_Status = OS_ThreadStatus.Awaiting;
+                            return;
+                        };
                     }
                 }
                 T_Progress = i * 100 / MAX_NUMBER_FERMAT;
@@ -133,6 +157,12 @@ namespace OS_Practice_5
                 }
                 factorials.Add(mul);
                 T_Progress = i * 100 / MAX_NUMBER;
+                if (T_Status == OS_ThreadStatus.Awaiting) return;
+                if (DateTime.Now.Subtract(StartTime).TotalSeconds > Quantum)
+                {
+                    T_Status = OS_ThreadStatus.Awaiting;
+                    return;
+                };
             }
             T_Result = "вычислены " + factorials.Count.ToString() + " факториалов";
             T_Status = OS_ThreadStatus.Stopped;

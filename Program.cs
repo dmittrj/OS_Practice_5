@@ -11,6 +11,7 @@ namespace OS_Practice_5
         public static bool OS_WheelInterrupt = false;
         public static int[] cur_lefts = new int[3];
         public static int[] cur_tops = new int[3];
+
         public static void OS_DrawTableLine(int position)
         {
             if (OS_CurrentCursorPosition == position)
@@ -213,30 +214,6 @@ namespace OS_Practice_5
                             break;
                     }
 
-
-
-                    //if (OS_Threads[i].T_Status == OS_ThreadStatus.Running)
-                    //{
-                    //    Console.SetCursorPosition(cur_lefts[i], cur_tops[i]);
-                    //    switch (OS_Wheel)
-                    //    {
-                    //        case 0:
-                    //            Console.Write("/");
-                    //            break;
-                    //        case 1:
-                    //            Console.Write("-");
-                    //            break;
-                    //        case 2:
-                    //            Console.Write("\\");
-                    //            break;
-                    //        case 3:
-                    //            Console.Write("|");
-                    //            break;
-                    //        default:
-                    //            break;
-                    //    }
-                    //    Console.Write(" " + OS_Threads[i].T_Progress.ToString() + "%");
-                    //}
                 }
                 OS_Wheel++;
                 OS_Wheel %= 4;
@@ -244,8 +221,10 @@ namespace OS_Practice_5
             }
         }
         
+       
         public static void OS_PrintTable()
         {
+            if (OS_WheelInterrupt) return;
             OS_WheelInterrupt = true;
             Console.Clear();
             Console.Write("\n┌───┬─ Потоки ──────────────────────── Приоритет ─ Состояние ────┐\n");
@@ -307,23 +286,18 @@ namespace OS_Practice_5
                 OS_Threads[i] = new OS_Thread((OS_Task)i);
             }
             OS_Spinning();
+            OS_ProcessManager processManager = new();
             while (true)
             {
                 OS_PrintTable();
                 ConsoleKey key = Console.ReadKey().Key;
                 switch (key)
                 {
-                    case ConsoleKey.Backspace:
-                        break;
-                    case ConsoleKey.Tab:
-                        break;
-                    case ConsoleKey.Clear:
-                        break;
                     case ConsoleKey.Enter:
                         if (OS_Threads[OS_CurrentCursorPosition].T_Status != OS_ThreadStatus.None)
                         {
-                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Running;
-                            OS_Threads[OS_CurrentCursorPosition].OS_Start();
+                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Awaiting;
+                            //OS_Threads[OS_CurrentCursorPosition].OS_Start();
                         }
                         break;
                     case ConsoleKey.Pause:
