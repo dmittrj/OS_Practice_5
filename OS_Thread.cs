@@ -9,16 +9,53 @@ namespace OS_Practice_5
 {
     enum OS_ThreadStatus
     {
-        None, Created, Stopped, Running, Awaiting, Executed
+        None, Created, Stopped, Running, Awaiting, Executed, Blocked
     }
     enum OS_Task
     {
         Primes, Fermat, Factorials
     }
+    struct OS_Context
+    {
+        public int i;
+        public int j;
+        public int k;
+        public bool isPrime;
+        public bool isFermatTheoremTrue;
+        public List<int> primes;
+        public bool active;
+        public OS_Context(OS_Task task)
+        {
+            switch (task)
+            {
+                case OS_Task.Primes:
+                    i = 0;
+                    j = 2;
+                    break;
+                case OS_Task.Fermat:
+                    i = 7;
+                    j = 0;
+                    break;
+                case OS_Task.Factorials:
+                    i = 0;
+                    j = 0;
+                    break;
+                default:
+                    i = 0;
+                    j = 0;
+                    break;
+            }
+            k = 0;
+            isPrime = false;
+            isFermatTheoremTrue = true;
+            primes = new List<int>();
+            active = false;
+        }
+    }
     class OS_Thread
     {
         private const int MAX_NUMBER = 500000;
-        private const int MAX_NUMBER_FERMAT = 300;
+        private const int MAX_NUMBER_FERMAT = 110;
 
         public OS_ThreadStatus T_Status;
         public OS_Task T_Task;
@@ -30,6 +67,7 @@ namespace OS_Practice_5
         private DateTime StartTime;
         //private DateTime EndTime;
         public string T_Result;
+        public OS_Context T_Context;
 
         public OS_Thread(OS_Task task)
         {
@@ -37,6 +75,7 @@ namespace OS_Practice_5
             T_isSelected = false;
             T_Priority = 3;
             T_Task = task;
+            T_Context = new(task);
             T_Progress = 0;
             T_Result = "";
             Quantum = 0;
@@ -53,6 +92,26 @@ namespace OS_Practice_5
             T_Thread.Start();
             while (T_Status == OS_ThreadStatus.Running);
             return new Task(OS_PerformTask);
+        }
+
+        private void OS_Interrupt(int i, int j, bool isPrime, List<int> primes)
+        {
+            //T_Context.task = OS_Task.Primes;
+            T_Context.i = i;
+            T_Context.j = j;
+            T_Context.isPrime = isPrime;
+            T_Context.primes = primes;
+            T_Context.active = true;
+        }
+
+        private void OS_Interrupt(int i, int j, int k, bool isFermatTheoremTrue)
+        {
+            T_Context.i = i;
+            T_Context.j = j;
+            T_Context.k = k;
+            T_Context.isFermatTheoremTrue = isFermatTheoremTrue;
+            T_Context.primes = new List<int>();
+            T_Context.primes.Add(1111);
         }
 
         private void OS_PerformTask()
@@ -76,24 +135,27 @@ namespace OS_Practice_5
 
         private void OS_PerformTask_Primes()
         {
-            List<int> primes = new List<int>();
-            for (int i = 0; i < MAX_NUMBER; i++)
+            List<int> primes = T_Context.primes;
+            for (int i = T_Context.i; i < MAX_NUMBER; i++)
             {
-                bool isPrime = true;
-                for (int j = 2; j < i; j++)
+                T_Context.i = 0;
+                bool isPrime = T_Context.isPrime;
+                for (int j = T_Context.j; j < i; j++)
                 {
+                    T_Context.isPrime = true;
+                    T_Context.j = 2;
+                    if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
+                    {
+                        T_Status = OS_ThreadStatus.Awaiting;
+                        OS_Interrupt(i, j, isPrime, primes);
+                        //T_Thread.Join();
+                        return;
+                    };
                     if (i % j == 0) {
                         //T_Thread.Join();
                         isPrime = false;
                         break;
                     }
-                    if (T_Status == OS_ThreadStatus.Awaiting) return;
-                    if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
-                    {
-                        T_Status = OS_ThreadStatus.Awaiting;
-                        T_Thread.Join();
-                        return;
-                    };
                 }
                 if (isPrime)
                 {
@@ -107,13 +169,28 @@ namespace OS_Practice_5
 
         private void OS_PerformTask_Fermat()
         {
-            bool isFermatTheoremTrue = true;
-            for (int i = 1; i < MAX_NUMBER_FERMAT; i++)
+            bool isFermatTheoremTrue = T_Context.isFermatTheoremTrue;
+            if (T_Context.i == 1)
             {
-                for (int j = 1; j < MAX_NUMBER_FERMAT; j++)
+                int yyyy = 7;
+            }
+            for (int i = T_Context.i; i < MAX_NUMBER_FERMAT; i++)
+            {
+                T_Context.i = 1;
+                for (int j = T_Context.j; j < MAX_NUMBER_FERMAT; j++)
                 {
-                    for (int k = 0; k < MAX_NUMBER_FERMAT * MAX_NUMBER_FERMAT; k++)
+                    T_Context.j = 1;
+                    for (int k = T_Context.k; k < MAX_NUMBER_FERMAT * MAX_NUMBER_FERMAT; k++)
                     {
+                        T_Context.k = 0;
+                        if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
+                        {
+                            //T_Thread.Interrupt();
+                            OS_Interrupt(i, j, k, isFermatTheoremTrue);
+                            //T_Thread = new Thread(OS_PerformTask);
+                            T_Status = OS_ThreadStatus.Awaiting;
+                            return;
+                        }
                         if (i * i * i + j * j * j == k * k * k)
                         {
                             break;
@@ -123,12 +200,6 @@ namespace OS_Practice_5
                             isFermatTheoremTrue = false;
                             break;
                         }
-                        if (T_Status == OS_ThreadStatus.Awaiting) return;
-                        if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
-                        {
-                            T_Status = OS_ThreadStatus.Awaiting;
-                            return;
-                        };
                     }
                 }
                 T_Progress = i * 100 / MAX_NUMBER_FERMAT;

@@ -132,7 +132,10 @@ namespace OS_Practice_5
                     {
                         Console.Write(" ");
                     }
-                    Console.Write("  Ожидает ");
+                    Console.Write("  Ожидает  ");
+                    Console.Write(" " + OS_Threads[position].T_Progress.ToString() + "% ");
+                    if (OS_Threads[position].T_Progress < 10) Console.Write(" ");
+                    Console.Write("│");
                     break;
                 case OS_ThreadStatus.Executed:
                     switch (OS_Threads[position].T_Task)
@@ -158,6 +161,31 @@ namespace OS_Practice_5
                         Console.Write(" ");
                     }
                     Console.Write("  Выполнен      │");
+                    break;
+                case OS_ThreadStatus.Blocked:
+                    switch (OS_Threads[position].T_Task)
+                    {
+                        case OS_Task.Primes:
+                            Console.Write(" Поток 1: поиск простых чисел    ");
+                            break;
+                        case OS_Task.Fermat:
+                            Console.Write(" Поток 2: док-во теоремы Ферма   ");
+                            break;
+                        case OS_Task.Factorials:
+                            Console.Write(" Поток 3: нахождение факториалов ");
+                            break;
+                        default:
+                            break;
+                    }
+                    for (int i = 0; i < OS_Threads[position].T_Priority; i++)
+                    {
+                        Console.Write("/");
+                    }
+                    for (int i = 0; i < 10 - OS_Threads[position].T_Priority; i++)
+                    {
+                        Console.Write(" ");
+                    }
+                    Console.Write("  Заблокирован  │");
                     break;
                 default:
                     break;
@@ -275,6 +303,7 @@ namespace OS_Practice_5
                     break;
             }
             Console.WriteLine();
+            Console.WriteLine(OS_Threads[1].T_Context.i + " || " + OS_Threads[1].T_Context.j + " || " + OS_Threads[1].T_Context.k);
             OS_WheelInterrupt = false;
         }
 
@@ -556,7 +585,7 @@ namespace OS_Practice_5
                             OS_Threads[OS_CurrentCursorPosition].T_Priority++;
                             if (OS_Threads[OS_CurrentCursorPosition].T_Priority > 5)
                                 OS_Threads[OS_CurrentCursorPosition].T_Priority = 5;
-                            OS_Threads[OS_CurrentCursorPosition].T_Thread.Priority = (System.Threading.ThreadPriority)(OS_Threads[OS_CurrentCursorPosition].T_Priority - 1);
+                            //OS_Threads[OS_CurrentCursorPosition].T_Thread.Priority = (System.Threading.ThreadPriority)(OS_Threads[OS_CurrentCursorPosition].T_Priority - 1);
                         }
                         break;
                     case ConsoleKey.OemComma:
