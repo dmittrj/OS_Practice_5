@@ -23,6 +23,7 @@ namespace OS_Practice_5
         public bool isPrime;
         public bool isFermatTheoremTrue;
         public List<int> primes;
+        public List<ulong> factorials;
         public bool active;
         public OS_Context(OS_Task task)
         {
@@ -49,13 +50,15 @@ namespace OS_Practice_5
             isPrime = false;
             isFermatTheoremTrue = true;
             primes = new List<int>();
+            factorials = new List<ulong>();
             active = false;
         }
     }
     class OS_Thread
     {
-        private const int MAX_NUMBER = 500000;
+        private const int MAX_NUMBER_PRIMES = 100000;
         private const int MAX_NUMBER_FERMAT = 110;
+        private const int MAX_NUMBER_FACTORIALS = 50000;
 
         public OS_ThreadStatus T_Status;
         public OS_Task T_Task;
@@ -110,8 +113,13 @@ namespace OS_Practice_5
             T_Context.j = j;
             T_Context.k = k;
             T_Context.isFermatTheoremTrue = isFermatTheoremTrue;
-            T_Context.primes = new List<int>();
-            T_Context.primes.Add(1111);
+        }
+
+        private void OS_Interrupt(int i, int j, List<ulong> factorials)
+        {
+            T_Context.i = i;
+            T_Context.j = j;
+            T_Context.factorials = factorials;
         }
 
         private void OS_PerformTask()
@@ -136,7 +144,7 @@ namespace OS_Practice_5
         private void OS_PerformTask_Primes()
         {
             List<int> primes = T_Context.primes;
-            for (int i = T_Context.i; i < MAX_NUMBER; i++)
+            for (int i = T_Context.i; i < MAX_NUMBER_PRIMES; i++)
             {
                 T_Context.i = 0;
                 bool isPrime = T_Context.isPrime;
@@ -146,8 +154,8 @@ namespace OS_Practice_5
                     T_Context.j = 2;
                     if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
                     {
-                        T_Status = OS_ThreadStatus.Awaiting;
                         OS_Interrupt(i, j, isPrime, primes);
+                        T_Status = OS_ThreadStatus.Awaiting;
                         //T_Thread.Join();
                         return;
                     };
@@ -161,7 +169,7 @@ namespace OS_Practice_5
                 {
                     primes.Add(i);
                 }
-                T_Progress = i * 100 / MAX_NUMBER;
+                T_Progress = i * 100 / MAX_NUMBER_PRIMES;
             }
             T_Result = "найдено " + primes.Count.ToString() + " простых чисел";
             T_Status = OS_ThreadStatus.Stopped;
@@ -170,10 +178,6 @@ namespace OS_Practice_5
         private void OS_PerformTask_Fermat()
         {
             bool isFermatTheoremTrue = T_Context.isFermatTheoremTrue;
-            if (T_Context.i == 1)
-            {
-                int yyyy = 7;
-            }
             for (int i = T_Context.i; i < MAX_NUMBER_FERMAT; i++)
             {
                 T_Context.i = 1;
@@ -217,23 +221,25 @@ namespace OS_Practice_5
 
         private void OS_PerformTask_Factorials()
         {
-            List<ulong> factorials = new List<ulong>();
-            for (int i = 0; i < MAX_NUMBER; i++)
+            List<ulong> factorials = T_Context.factorials;
+            for (int i = T_Context.i; i < MAX_NUMBER_FACTORIALS; i++)
             {
+                T_Context.i = 0;
                 ulong mul = 1;
-                for (int j = 1; j < i; j++)
+                for (int j = T_Context.j; j < i; j++)
                 {
-                    if (T_Status == OS_ThreadStatus.Awaiting) return;
+                    T_Context.j = 1;
+                    if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
+                    {
+                        OS_Interrupt(i, j, factorials);
+                        T_Status = OS_ThreadStatus.Awaiting;
+                        //T_Thread.Join();
+                        return;
+                    };
                     mul *= (ulong)j;
                 }
                 factorials.Add(mul);
-                T_Progress = i * 100 / MAX_NUMBER;
-                if (T_Status == OS_ThreadStatus.Awaiting) return;
-                if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
-                {
-                    T_Status = OS_ThreadStatus.Awaiting;
-                    return;
-                };
+                T_Progress = i * 100 / MAX_NUMBER_FACTORIALS;
             }
             T_Result = "вычислены " + factorials.Count.ToString() + " факториалов";
             T_Status = OS_ThreadStatus.Stopped;

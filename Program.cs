@@ -303,7 +303,6 @@ namespace OS_Practice_5
                     break;
             }
             Console.WriteLine();
-            Console.WriteLine(OS_Threads[1].T_Context.i + " || " + OS_Threads[1].T_Context.j + " || " + OS_Threads[1].T_Context.k);
             OS_WheelInterrupt = false;
         }
 
