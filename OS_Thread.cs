@@ -30,11 +30,11 @@ namespace OS_Practice_5
             switch (task)
             {
                 case OS_Task.Primes:
-                    i = 0;
+                    i = 2;
                     j = 2;
                     break;
                 case OS_Task.Fermat:
-                    i = 7;
+                    i = 1;
                     j = 0;
                     break;
                 case OS_Task.Factorials:
@@ -47,7 +47,7 @@ namespace OS_Practice_5
                     break;
             }
             k = 0;
-            isPrime = false;
+            isPrime = true;
             isFermatTheoremTrue = true;
             primes = new List<int>();
             factorials = new List<ulong>();
@@ -57,7 +57,7 @@ namespace OS_Practice_5
     class OS_Thread
     {
         private const int MAX_NUMBER_PRIMES = 100000;
-        private const int MAX_NUMBER_FERMAT = 110;
+        private const int MAX_NUMBER_FERMAT = 150;
         private const int MAX_NUMBER_FACTORIALS = 50000;
 
         public OS_ThreadStatus T_Status;
@@ -68,7 +68,6 @@ namespace OS_Practice_5
         public int T_Progress;
         private int Quantum;
         private DateTime StartTime;
-        //private DateTime EndTime;
         public string T_Result;
         public OS_Context T_Context;
 
@@ -156,9 +155,13 @@ namespace OS_Practice_5
                     {
                         OS_Interrupt(i, j, isPrime, primes);
                         T_Status = OS_ThreadStatus.Awaiting;
-                        //T_Thread.Join();
                         return;
                     };
+                    if (T_Status == OS_ThreadStatus.Blocked)
+                    {
+                        OS_Interrupt(i, j, isPrime, primes);
+                        return;
+                    }
                     if (i % j == 0) {
                         //T_Thread.Join();
                         isPrime = false;
@@ -189,10 +192,13 @@ namespace OS_Practice_5
                         T_Context.k = 0;
                         if (DateTime.Now.Subtract(StartTime).TotalMilliseconds > Quantum)
                         {
-                            //T_Thread.Interrupt();
                             OS_Interrupt(i, j, k, isFermatTheoremTrue);
-                            //T_Thread = new Thread(OS_PerformTask);
                             T_Status = OS_ThreadStatus.Awaiting;
+                            return;
+                        }
+                        if (T_Status == OS_ThreadStatus.Blocked)
+                        {
+                            OS_Interrupt(i, j, k, isFermatTheoremTrue);
                             return;
                         }
                         if (i * i * i + j * j * j == k * k * k)
@@ -233,9 +239,13 @@ namespace OS_Practice_5
                     {
                         OS_Interrupt(i, j, factorials);
                         T_Status = OS_ThreadStatus.Awaiting;
-                        //T_Thread.Join();
                         return;
-                    };
+                    }
+                    if (T_Status == OS_ThreadStatus.Blocked)
+                    {
+                        OS_Interrupt(i, j, factorials);
+                        return;
+                    }
                     mul *= (ulong)j;
                 }
                 factorials.Add(mul);

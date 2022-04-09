@@ -284,7 +284,7 @@ namespace OS_Practice_5
                     break;
                 case OS_ThreadStatus.Awaiting:
                     Console.WriteLine("│ Space - выбрать                                                │");
-                    Console.WriteLine("│     B - разблокировать   +/- - изменить приоритет              │");
+                    Console.WriteLine("│     B - заблокировать   +/- - изменить приоритет               │");
                     Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 case OS_ThreadStatus.Executed:
@@ -297,6 +297,11 @@ namespace OS_Practice_5
                         Console.Write(" ");
                     }
                     Console.WriteLine("│");
+                    Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
+                    break;
+                case OS_ThreadStatus.Blocked:
+                    Console.WriteLine("│ Space - выбрать                                                │");
+                    Console.WriteLine("│     B - разблокировать    +/- - изменить приоритет             │");
                     Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 default:
@@ -314,7 +319,7 @@ namespace OS_Practice_5
                 OS_Threads[i] = new OS_Thread((OS_Task)i);
             }
             OS_Spinning();
-            OS_ProcessManager processManager = new();
+            _ = new OS_ProcessManager();
             while (true)
             {
                 OS_PrintTable();
@@ -328,76 +333,30 @@ namespace OS_Practice_5
                             //OS_Threads[OS_CurrentCursorPosition].OS_Start();
                         }
                         break;
-                    case ConsoleKey.Pause:
-                        break;
-                    case ConsoleKey.Escape:
-                        break;
                     case ConsoleKey.Spacebar:
                         OS_Threads[OS_CurrentCursorPosition].T_isSelected = !OS_Threads[OS_CurrentCursorPosition].T_isSelected;
-                        break;
-                    case ConsoleKey.PageUp:
-                        break;
-                    case ConsoleKey.PageDown:
-                        break;
-                    case ConsoleKey.End:
-                        break;
-                    case ConsoleKey.Home:
-                        break;
-                    case ConsoleKey.LeftArrow:
                         break;
                     case ConsoleKey.UpArrow:
                         OS_CurrentCursorPosition--;
                         if (OS_CurrentCursorPosition < 0)
                             OS_CurrentCursorPosition = 0;
                         break;
-                    case ConsoleKey.RightArrow:
-                        break;
                     case ConsoleKey.DownArrow:
                         OS_CurrentCursorPosition++;
                         OS_CurrentCursorPosition %= 3;
                         break;
-                    case ConsoleKey.Select:
-                        break;
-                    case ConsoleKey.Print:
-                        break;
-                    case ConsoleKey.Execute:
-                        break;
-                    case ConsoleKey.PrintScreen:
-                        break;
-                    case ConsoleKey.Insert:
-                        break;
-                    case ConsoleKey.Delete:
-                        break;
-                    case ConsoleKey.D0:
-                        break;
-                    case ConsoleKey.D1:
-                        break;
-                    case ConsoleKey.D2:
-                        break;
-                    case ConsoleKey.D3:
-                        break;
-                    case ConsoleKey.D4:
-                        break;
-                    case ConsoleKey.D5:
-                        break;
-                    case ConsoleKey.D6:
-                        break;
-                    case ConsoleKey.D7:
-                        break;
-                    case ConsoleKey.D8:
-                        break;
-                    case ConsoleKey.D9:
-                        break;
-                    case ConsoleKey.A:
-                        break;
                     case ConsoleKey.B:
                         if (OS_Threads[OS_CurrentCursorPosition].T_Status == OS_ThreadStatus.Running)
                         {
-                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Awaiting;
+                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Blocked;
                         }
                         else if (OS_Threads[OS_CurrentCursorPosition].T_Status == OS_ThreadStatus.Awaiting)
                         {
-                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Running;
+                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Blocked;
+                        }
+                        else if (OS_Threads[OS_CurrentCursorPosition].T_Status == OS_ThreadStatus.Blocked)
+                        {
+                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.Awaiting;
                         }
                         break;
                     case ConsoleKey.C:
@@ -407,6 +366,10 @@ namespace OS_Practice_5
                         }
                         break;
                     case ConsoleKey.D:
+                        if (OS_Threads[OS_CurrentCursorPosition].T_Status == OS_ThreadStatus.Executed)
+                        {
+                            OS_Threads[OS_CurrentCursorPosition].T_Status = OS_ThreadStatus.None;
+                        }
                         break;
                     case ConsoleKey.E:
                         break;
