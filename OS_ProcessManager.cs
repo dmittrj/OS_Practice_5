@@ -9,7 +9,7 @@ namespace OS_Practice_5
 {
     class OS_ProcessManager
     {
-        private Thread M_Thread;
+        private readonly Thread M_Thread;
         int Quantum;
         int PrioritySum;
 

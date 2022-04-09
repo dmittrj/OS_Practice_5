@@ -276,6 +276,16 @@ namespace OS_Practice_5
                     Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 case OS_ThreadStatus.Stopped:
+                    Console.WriteLine("│ Space - выбрать                                                │");
+                    Console.WriteLine("│     D - удалить                                                │");
+                    Console.WriteLine("├────────────────────────────────────────────────────────────────┤");
+                    Console.Write("│ Результат: " + OS_Threads[OS_CurrentCursorPosition].T_Result);
+                    for (int i = 0; i < 52 - OS_Threads[OS_CurrentCursorPosition].T_Result.Length; i++)
+                    {
+                        Console.Write(" ");
+                    }
+                    Console.WriteLine("│");
+                    Console.WriteLine("└────────────────────────────────────────────────────────────────┘");
                     break;
                 case OS_ThreadStatus.Running:
                     Console.WriteLine("│ Space - выбрать                                                │");
@@ -311,7 +321,7 @@ namespace OS_Practice_5
             OS_WheelInterrupt = false;
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             Console.CursorVisible = false;
             for (int i = 0; i < OS_Threads.Length; i++)
